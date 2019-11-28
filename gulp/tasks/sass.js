@@ -25,39 +25,40 @@ const buildSass = () => {
       "\n"
   );
 
-  return (
-    src(`${paths.sass.src}style.scss`)
-      .pipe(
-        gulpif(
-          !isProduction,
-          plumber({
-            errorHandler: err => {
-              notify("SASS build error", err);
-            }
-          })
-        )
+  return src(`${paths.sass.src}style.scss`)
+    .pipe(
+      gulpif(
+        !isProduction,
+        plumber({
+          errorHandler: err => {
+            notify("SASS build error", err);
+          }
+        })
       )
-      .pipe(gulpif(!isProduction, sourcemaps.init()))
-      .pipe(sass())
-      .pipe(
-        postcss([
-          flexBugsFix(),
-          postcssPresetEnv({
-            autoprefixer: {
-              flexbox: "no-2009"
-            },
-            stage: 3
-          })
-        ])
-      )
-      // .pipe(gulpif(isProduction, csso()))
-      .pipe(gulpif(!isProduction, sourcemaps.write()))
-      .pipe(dest(paths.sass.dest))
-  );
+    )
+    .pipe(gulpif(!isProduction, sourcemaps.init()))
+    .pipe(sass())
+    .pipe(
+      postcss([
+        flexBugsFix(),
+        postcssPresetEnv({
+          autoprefixer: {
+            flexbox: "no-2009"
+          },
+          stage: 3
+        })
+      ])
+    )
+    .pipe(gulpif(isProduction, csso()))
+    .pipe(gulpif(!isProduction, sourcemaps.write()))
+    .pipe(dest(paths.sass.dest));
 };
 
 const watchSass = reload => {
-  watch([`${paths.sass.src}**/*.scss`], series(buildSass, reload));
+  watch(
+    [`!(${paths.sass.src}blocks.scss)`, `${paths.sass.src}**/*.scss`],
+    series(buildSass, reload)
+  );
 };
 
 module.exports = {

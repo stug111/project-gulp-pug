@@ -1,5 +1,6 @@
 const { src, dest, series, watch } = require("gulp");
-const webpack = require("webpack-stream");
+const webpack = require("webpack");
+const webpackStream = require("webpack-stream");
 const plumber = require("gulp-plumber");
 const { notify } = require("../utils");
 const paths = require("../paths");
@@ -7,7 +8,7 @@ const gulpif = require("gulp-if");
 const isProduction = process.env.NODE_ENV === "production";
 
 const webpackOpts = {
-  // mode: process.env.NODE_ENV || "development",
+  mode: process.env.NODE_ENV || "development",
   mode: "development",
   devtool: isProduction ? false : "inline-source-map",
   module: {
@@ -24,6 +25,13 @@ const webpackOpts = {
       }
     ]
   },
+  plugins: [
+    new webpack.ProvidePlugin({
+      $: "jquery",
+      jQuery: "jquery",
+      "window.jQuery": "jquery"
+    })
+  ],
   watch: false
 };
 
@@ -40,7 +48,7 @@ const buildScripts = () =>
       )
     )
     .pipe(
-      webpack({
+      webpackStream({
         ...webpackOpts,
         output: {
           filename: "script.js"
