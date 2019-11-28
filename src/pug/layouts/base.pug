@@ -6,14 +6,16 @@ block variables
 
 html(lang="ru")
   head
-    meta(charset="utf-8")
+    meta(charset="UTF-8")
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    meta(http-equiv="X-UA-Compatible", content="ie=edge")
 
     title #{pageTitle}
     meta(name="description" content=pageDescription)
 
     +favicon
 
-    link(href="/css/style.css" rel="stylesheet")
+    link(href="css/style.css" rel="stylesheet")
 
   body
 
@@ -21,5 +23,5 @@ html(lang="ru")
 
     block modals
 
-  script(src="/js/script.js")
+  script(src="js/script.js")
         
